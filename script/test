@@ -35,14 +35,15 @@ for i in ${@}; do
         ;;
     esac
 done
-
 if [ ! -z ${test_targets} ]; then
     echo "Found Targets: ${test_targets[@]}"
 fi
 
 
-APP_ENV=${APP_ENV:-"development"}
+script/clean tests
 
+
+APP_ENV=${APP_ENV:-"development"}
 case ${APP_ENV} in
     development)
     echo "==> Setting up the development environment"
