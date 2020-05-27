@@ -2,10 +2,11 @@
 
 [![Build Status](https://travis-ci.org/github/scripts-to-rule-them-all.svg?branch=master)](https://travis-ci.org/github/scripts-to-rule-them-all)
 
-This is a set of boilerplate scripts describing the [normalized script pattern
+Inspired by [github/scripts-to-rule-them-all](https://github.com/github/scripts-to-rule-them-all). 
+This is a set of boilerplate scripts based on the [normalized script pattern
 that GitHub uses in its projects](http://githubengineering.com/scripts-to-rule-them-all/). While these
 patterns can work for projects based on any framework or language, these
-particular examples are for a simple Ruby on Rails application.
+particular examples are for a simple ***Python*** application.
 
 ## The Idea
 
@@ -37,8 +38,17 @@ The following is a list of scripts and their primary responsibilities.
 [`script/bootstrap`][bootstrap] is used solely for fulfilling dependencies of the project.
 
 This can mean RubyGems, npm packages, Homebrew packages, Ruby versions, Git submodules, etc.
+For this Python-based repository, this means installing Python packages into a virtual environment.
 
 The goal is to make sure all required dependencies are installed.
+
+### script/clean
+
+[`script/clean`][clean] is used to clean the project directory and other services 
+the project interacts with.
+
+The script may implement command line options that clean specific services and/or "deep clean" 
+the system removing all artifacts created by the project.
 
 ### script/setup
 
@@ -55,16 +65,29 @@ This is also useful for ensuring that your bootstrapping actually works well.
 If you have not worked on the project for a while, running [`script/update`][update] after
 a pull will ensure that everything inside the project is up to date and ready to work.
 
-Typically, [`script/bootstrap`][bootstrap] is run inside this script. This is also a good
-opportunity to run database migrations or any other things required to get the
+The script may implement a `--dependencies` command line option that locks and installs updated 
+project dependencies.
+
+Typically, [`script/clean`][clean] and [`script/bootstrap`][bootstrap] are run inside this script.
+This is also a good opportunity to run database migrations or any other things required to get the
 state of the app into shape for the current version that is checked out.
+
+### script/build
+
+[`script/build`][build] is used to build the application and its artifacts.
+
+This can mean building a Python package, Docker image, etc.
+
+If the project has multiple build products, for example a project that builds a Python package 
+and generates documentation, the script may implement command line options to control which 
+products are built.
 
 ### script/server
 
 [`script/server`][server] is used to start the application.
 
-For a web application, this might start up any extra processes that the 
-application requires to run in addition to itself.
+For a web application, this might start up any extra processes that the application requires 
+to run in addition to itself.
 
 [`script/update`][update] should be called ahead of any application booting to ensure that
 the application is up to date and can run appropriately.
@@ -76,7 +99,9 @@ the application is up to date and can run appropriately.
 A good pattern to support is having an optional argument that is a file path.
 This allows you to support running single tests.
 
-Linting (i.e. rubocop, jshint, pmd, etc.) can also be considered a form of testing. These tend to run faster than tests, so put them towards the beginning of a [`script/test`][test] so it fails faster if there's a linting problem.
+Linting (i.e. pylint, flake8) can also be considered a form of testing. These tend to run 
+faster than tests, so put them towards the beginning of a [`script/test`][test] so it fails 
+faster if there's a linting problem.
 
 [`script/test`][test] should be called from [`script/cibuild`][cibuild], so it should handle
 setting up the application appropriately based on the environment. For example,
@@ -104,6 +129,7 @@ You should configure and run anything that needs to happen to open a console for
 the requested environment.
 
 [bootstrap]: script/bootstrap
+[bootstrap]: script/clean
 [setup]: script/setup
 [update]: script/update
 [server]: script/server
