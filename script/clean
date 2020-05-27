@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+# Clean the project directory.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+default=true
+
+# Process Script Arguments
+for i in ${@}; do
+    case ${i} in
+        --deep)
+        deep_clean=true
+        ;;
+
+        build)
+        build=true
+        default=
+        ;;
+
+        test)
+        test=true
+        default=
+        ;;
+
+        docs)
+        docs=true
+        default=
+        ;;
+
+        pipenv)
+        pipenv=true
+        default=
+        ;;
+
+        venv)
+        venv=true
+        default=
+        ;;
+
+        *)
+        echo "Unknown argument: $i"
+        exit 1
+        ;;
+    esac
+done
+
+
+if [ ${default} ]; then
+    echo "==> Cleaning the project directory..."
+fi
+
+
+if [ ${default} ] || [ ${build} ]; then
+    echo "==> Removing Python build artifacts"
+    find . -name '*.pyc' -exec rm -f {} +
+    find . -name '*.pyo' -exec rm -f {} +
+    find . -name '*~' -exec rm -f {} +
+    find . -name '__pycache__' -exec rm -fr {} +
+    find . -name '*.egg-info' -exec rm -fr {} +
+    find . -name '*.egg' -exec rm -f {} +
+    rm -rf build/
+    rm -rf dist/
+    rm -rf .eggs/
+fi
+
+
+if [ ${default} ] || [ ${test} ]; then
+    echo "==> Removing test and coverage artifacts"
+    rm -rf .cache/
+    rm -f  .coverage
+    rm -rf .tox/
+    rm -rf htmlcov/
+fi
+
+
+if [ ${default} ] || [ ${docs} ]; then
+    if [ -d "docs" ]; then
+        echo "==> Cleaning the docs directory"
+        rm -rf docs/_build/*
+    fi
+fi
+
+
+if [ ${deep_clean} ]; then
+    echo "==> Deep cleaning..."
+fi
+
+
+if [ ${deep_clean} ] || [ ${pipenv} ]; then
+    if [ -f "Pipfile" ] && [ -n "$(pipenv --version 2>/dev/null)" ]; then
+        echo "==> Removing pipenv environment"
+        pipenv --rm || true
+    fi
+fi
+
+
+if [ ${deep_clean} ] || [ ${venv} ]; then
+    if [ -d ".venv" ]; then
+        echo "==> Removing .venv project virtual environment"
+        rm -rf .venv/
+    fi
+
+    if [ -d "venv" ]; then
+        echo "Removing venv project virtual environment: 'venv'"
+        rm -rf venv/
+    fi
+
+fi
