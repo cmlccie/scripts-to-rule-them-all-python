@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Build the application and its artifacts.
+
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+
+# Default build
+all=true
+
+
+# Process Script Arguments
+for i in ${@}; do
+    case ${i} in
+        package)
+        all=
+        package=true
+        ;;
+
+        docs)
+        all=
+        docs=true
+        ;;
+
+        *)
+        echo "Unknown argument: $i"
+        exit 1
+        ;;
+    esac
+done
+
+
+script/clean build
+
+
+# Build the Python package
+if [ ${all} ] || [ ${package} ]; then
+    echo "==> Building the Python source-distribution package"
+    python setup.py sdist
+fi
+
+
+# Build the docs
+if [ ${all} ] || [ ${docs} ]; then
+    echo "==> Building the Docs"
+    make -C docs clean
+    make -C docs html SPHINXOPTS="-W"
+fi
