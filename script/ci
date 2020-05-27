@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Setup the environment for CI to run tests. This script is primarily designed 
+# to run on the continuous integration server.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "Integration started at…"
+date "+%H:%M:%S"
+
+
+# Configure the CI environment
+export APP_ENV="ci"
+
+
+# Lint the source code
+script/test lint
+
+
+# Build the application
+script/build
+
+
+# Install the application package(s)
+for file in dist/*.tar.gz; do
+  pip install ${file}
+done
+
+
+# Run the test suite
+script/test tests
+
+
+echo "Integration completed at…"
+date "+%H:%M:%S"
