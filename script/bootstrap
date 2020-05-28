@@ -41,9 +41,11 @@ elif [ -f "requirements.txt" ] || [ -f "requirements-dev.txt" ]; then
         echo "Installing packages in the active virtual environment."
     elif [ -f "venv/bin/activate" ]; then
         echo "Installing packages in the project's venv virtual environment."
+        # shellcheck disable=SC1091
         source venv/bin/activate
     elif [ -f ".venv/bin/activate" ]; then
         echo "Installing packages in the project's .venv virtual environment."
+        # shellcheck disable=SC1091
         source .venv/bin/activate
     fi
 

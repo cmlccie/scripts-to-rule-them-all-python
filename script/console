@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Launch a console for the application. Optionally allow an environment to be 
-# passed in to let the script handle the specific requirements for connecting 
+# Launch a console for the application. Optionally allow an environment to be
+# passed in to let the script handle the specific requirements for connecting
 # to a console for that environment.
 
 set -e
 
 cd "$(dirname "$0")/.."
 
-# Use first argument as an environment name. Use this to decide how to connect 
+# Use first argument as an environment name. Use this to decide how to connect
 # to the appropriate console.
-console=${1:-"dev"}
+console="${1:-"dev"}"
 
-case ${console} in
+case "${console}" in
     dev)
     echo "==> Connecting to the development console"
     if [ -f "script/console.py" ]; then

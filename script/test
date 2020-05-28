@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the test suite for the application. Optionally pass in a path to an 
+# Run the test suite for the application. Optionally pass in a path to an
 # individual test file to run a single test.
 
 set -e
@@ -12,8 +12,8 @@ test_targets=()
 
 
 # Process Script Arguments
-for i in ${@}; do
-    case ${i} in
+for i in "${@}"; do
+    case "${i}" in
         lint)
         lint=true
         default=
@@ -26,8 +26,8 @@ for i in ${@}; do
 
         *)
         # Check to see if arguments are paths to target files or directories
-        if [ -f ${i} ] || [ -d ${i} ]; then
-            test_targets+=(${i})
+        if [ -f "${i}" ] || [ -d "${i}" ]; then
+            test_targets+=("${i}")
         else
             echo "Unknown argument: $i"
             exit 1
@@ -35,16 +35,16 @@ for i in ${@}; do
         ;;
     esac
 done
-if [ ! -z ${test_targets} ]; then
-    echo "Found Targets: ${test_targets[@]}"
+if [ -n "${test_targets[*]}" ]; then
+    echo "Found Targets: ${test_targets[*]}"
 fi
 
 
 script/clean tests
 
 
-APP_ENV=${APP_ENV:-"development"}
-case ${APP_ENV} in
+APP_ENV="${APP_ENV:-"development"}"
+case "${APP_ENV}" in
     development)
     echo "==> Setting up the development environment"
     ;;
@@ -62,7 +62,7 @@ case ${APP_ENV} in
     ;;
 
     *)
-    echo "Unknown Application Environment: ${console}"
+    echo "Unknown Application Environment: ${APP_ENV}"
     exit 1
     ;;
 esac
@@ -73,14 +73,14 @@ esac
 
 
 # Lint the source code
-if [ ${default} ] || [ ${lint} ]; then
+if [ "${default}" ] || [ "${lint}" ]; then
     echo "==> Linting the source code..."
-    flake8 ${test_targets[@]}
+    flake8 "${test_targets[@]}"
 fi
 
 
 # Run the test suite
-if [ ${default} ] || [ ${tests} ]; then
+if [ "${default}" ] || [ "${tests}" ]; then
     echo "==> Running the test suite..."
-    pytest ${test_targets[@]}
+    pytest "${test_targets[@]}"
 fi

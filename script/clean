@@ -8,8 +8,8 @@ cd "$(dirname "$0")/.."
 default=true
 
 # Process Script Arguments
-for i in ${@}; do
-    case ${i} in
+for i in "${@}"; do
+    case "${i}" in
         --deep)
         deep_clean=true
         ;;
@@ -47,12 +47,12 @@ for i in ${@}; do
 done
 
 
-if [ ${default} ]; then
+if [ "${default}" ]; then
     echo "==> Cleaning the project directory..."
 fi
 
 
-if [ ${default} ] || [ ${build} ]; then
+if [ "${default}" ] || [ "${build}" ]; then
     echo "==> Removing Python build artifacts"
     find . -name '*.pyc' -exec rm -f {} +
     find . -name '*.pyo' -exec rm -f {} +
@@ -66,7 +66,7 @@ if [ ${default} ] || [ ${build} ]; then
 fi
 
 
-if [ ${default} ] || [ ${tests} ]; then
+if [ "${default}" ] || [ "${tests}" ]; then
     echo "==> Removing test and coverage artifacts"
     rm -rf .cache/
     rm -f  .coverage
@@ -75,7 +75,7 @@ if [ ${default} ] || [ ${tests} ]; then
 fi
 
 
-if [ ${default} ] || [ ${docs} ]; then
+if [ "${default}" ] || [ "${docs}" ]; then
     if [ -d "docs" ]; then
         echo "==> Cleaning the docs directory"
         rm -rf docs/_build/*
@@ -83,12 +83,12 @@ if [ ${default} ] || [ ${docs} ]; then
 fi
 
 
-if [ ${deep_clean} ]; then
+if [ "${deep_clean}" ]; then
     echo "==> Deep cleaning..."
 fi
 
 
-if [ ${deep_clean} ] || [ ${pipenv} ]; then
+if [ "${deep_clean}" ] || [ "${pipenv}" ]; then
     if [ -f "Pipfile" ] && [ -n "$(pipenv --version 2>/dev/null)" ]; then
         echo "==> Removing the pipenv environment"
         pipenv --rm || true
@@ -96,7 +96,7 @@ if [ ${deep_clean} ] || [ ${pipenv} ]; then
 fi
 
 
-if [ ${deep_clean} ] || [ ${venv} ]; then
+if [ "${deep_clean}" ] || [ "${venv}" ]; then
     if [ -d ".venv" ]; then
         echo "==> Removing .venv project virtual environment"
         rm -rf .venv/

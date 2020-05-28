@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Setup the environment for CI to run tests. This script is primarily designed 
+# Setup the environment for CI to run tests. This script is primarily designed
 # to run on the continuous integration server.
 
 set -e
@@ -24,7 +24,7 @@ script/build
 
 # Install the application package(s)
 for file in dist/*.tar.gz; do
-  pip install ${file}
+  pip install "${file}"
 done
 
 

@@ -6,12 +6,11 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-default=true
 update_dependencies=
 
 # Process Script Arguments
-for i in ${@}; do
-    case ${i} in
+for i in "${@}"; do
+    case "${i}" in
         --dependencies)
         update_dependencies=true
         ;;
@@ -24,7 +23,7 @@ for i in ${@}; do
 done
 
 
-if [ ${update_dependencies} ]; then
+if [ "${update_dependencies}" ]; then
     echo "==> Updating project dependencies"
 
     if [ -f "Pipfile" ] && [ -n "$(pipenv --version 2>/dev/null)" ]; then
@@ -38,7 +37,9 @@ if [ ${update_dependencies} ]; then
         echo "Checking for an active virutal environment..."
         if [ -n "$(python -c 'import sys; print (sys.real_prefix)' 2>/dev/null)" ]; then
             echo "==> Freezing package requirements for the active virtual environment..."
-            pip freeze -r requirements.txt > requirements.txt
+            temp_file=$(mktemp -u requirements.txt.XXXXXX)
+            pip freeze -r requirements.txt > "${temp_file}"
+            mv "${temp_file}" requirements.txt
         fi
     fi
 fi
