@@ -32,7 +32,7 @@ if [ -f "Pipfile" ] && [ -n "$(pipenv --version 2>/dev/null)" ]; then
     echo "==> Installing Python dependencies from Pipfile using pipenv..."
     pipenv install --dev
 
-elif [ -f "requirements-dev.txt" ] || [ -f "requirements.txt" ]; then
+elif [ -f "requirements.txt" ] || [ -f "requirements-dev.txt" ]; then
     echo "==> Installing Python dependencies from requirements file(s) using pip"
 
     # Check for an active virtual environment, or look for one in the project directory
@@ -41,7 +41,7 @@ elif [ -f "requirements-dev.txt" ] || [ -f "requirements.txt" ]; then
         echo "Installing packages in the active virtual environment."
     elif [ -f "venv/bin/activate" ]; then
         echo "Installing packages in the project's venv virtual environment."
-        source venv/bin/activate        
+        source venv/bin/activate
     elif [ -f ".venv/bin/activate" ]; then
         echo "Installing packages in the project's .venv virtual environment."
         source .venv/bin/activate
