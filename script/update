@@ -1,13 +1,52 @@
-#!/bin/sh
-
-# script/update: Update application to run for its current checkout.
+#!/usr/bin/env bash
+# Update the application and the application instructure to run for the current
+# checkout.
 
 set -e
 
 cd "$(dirname "$0")/.."
 
+default=true
+update_dependencies=
+
+# Process Script Arguments
+for i in ${@}; do
+    case ${i} in
+        --dependencies)
+        update_dependencies=true
+        ;;
+
+        *)
+        echo "Unknown argument: $i"
+        exit 1
+        ;;
+    esac
+done
+
+
+if [ ${update_dependencies} ]; then
+    echo "==> Updating project dependencies"
+
+    if [ -f "Pipfile" ] && [ -n "$(pipenv --version 2>/dev/null)" ]; then
+        echo "==> Updating Python dependencies with pipenv..."
+        pipenv update --dev
+        echo "==> Freezing package requirements..."
+        pipenv lock -r > requirements.txt
+        pipenv lock --dev -r > requirements-dev.txt
+
+    elif [ -f "requirements.txt" ]; then
+        echo "Checking for an active virutal environment..."
+        if [ -n "$(python -c 'import sys; print (sys.real_prefix)' 2>/dev/null)" ]; then
+            echo "==> Freezing package requirements for the active virtual environment..."
+            pip freeze -r requirements.txt > requirements.txt
+        fi
+    fi
+fi
+
+
+# Ensure the application dependencies are installed
 script/bootstrap
 
-echo "==> Updating db…"
-# run all database migrations to ensure everything is up to date.
-bin/rake db:migrate
+
+# Ensure the application infrastructure is ready to use with the current checkout
+# E.g. Run all database migrations to ensure everything is up to date
